@@ -24,7 +24,7 @@ router.get("/:code", async function (req, res, next) {
         const company = result.rows[0]
         const comp_code = company["code"]
         const result2 = await db.query("SELECT * FROM invoices WHERE comp_code = $1", [comp_code])
-        return res.json({ company: {code: company["code"], name: company["name"], description: company["description"], invoices: result2.rows}});
+        return res.json({ company: { code: company["code"], name: company["name"], description: company["description"], invoices: result2.rows } });
     }
     catch (e) {
         next(e)
@@ -32,7 +32,7 @@ router.get("/:code", async function (req, res, next) {
 });
 
 router.post("/", async function (req, res, next) {
-    console.log(req.body)
+
     try {
         if (req.body.length == 0 || !req.body) {
             throw new ExpressError("Please enter data", 400)
