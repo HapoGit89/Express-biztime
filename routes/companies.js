@@ -25,7 +25,8 @@ router.get("/:code", async function (req, res, next) {
         const company = result.rows[0]
         const comp_code = company["code"]
         const result2 = await db.query("SELECT * FROM invoices WHERE comp_code = $1", [comp_code])
-        return res.json({ company: { code: company["code"], name: company["name"], description: company["description"], invoices: result2.rows } });
+        const result3 = await db.query("SELECT i.industry from industries_companies as ic LEFT JOIN industries as i ON ic.ind_code=i.code WHERE ic.comp_code=$1", [comp_code])
+        return res.json({ company: { code: company["code"], name: company["name"], description: company["description"], invoices: result2.rows, industries: result3.rows } });
     }
     catch (e) {
         next(e)
