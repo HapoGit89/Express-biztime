@@ -43,8 +43,9 @@ router.post("/", async function (req, res, next) {
         if (!comp_code || !amt) {
             throw new ExpressError("Pleaser enter Data in right format", 400)
         }
-        const add_date = new Date(Date.now()).toDateString()
-        const result = await db.query("INSERT INTO invoices (comp_code, amt, paid, add_date, paid_date) VALUES ($1, $2, false, $3, null) RETURNING id, comp_code, amt, paid, add_date, paid_date ", [comp_code, amt, add_date])
+        const add_date = Date.now()
+        console.log(add_date)
+        const result = await db.query("INSERT INTO invoices (comp_code, amt, paid, paid_date) VALUES ($1, $2, false, null) RETURNING id, comp_code, amt, paid, add_date, paid_date ", [comp_code, amt])
 
         return res.status(201).json({invoice: result.rows[0]});
     }

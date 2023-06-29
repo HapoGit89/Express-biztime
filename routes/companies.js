@@ -32,7 +32,6 @@ router.get("/:code", async function (req, res, next) {
 });
 
 router.post("/", async function (req, res, next) {
-
     try {
         if (req.body.length == 0 || !req.body) {
             throw new ExpressError("Please enter data", 400)
@@ -55,7 +54,6 @@ router.post("/", async function (req, res, next) {
 router.delete("/:code", async function (req, res, next) {
     try {
         const code = req.params.code
-
         const result = await db.query("DELETE FROM companies WHERE code=$1 RETURNING code, name, description", [code])
         if (result.rows.length == 0) {
             throw new ExpressError(`Sorry couldnt find results for code "${code}"`, 404)
