@@ -3,6 +3,7 @@ const router = new express.Router();
 const db = require('../db')
 const ExpressError = require("../expressError");
 router.use(express.json())
+const slug = require("slugify")
 
 
 
@@ -38,11 +39,13 @@ router.post("/", async function (req, res, next) {
         }
         const { code, name, description } = req.body
 
+        const slugcode = slug(code,{remove: /[*+~.()'"$!:@]/, replacement: '_', strict: true, lower: true, trim: true})
+
         if (!code || !name || !description) {
             throw new ExpressError("Pleaser enter Data in right format", 422)
         }
 
-        const result = await db.query("INSERT INTO companies (code, name, description) VALUES ($1, $2, $3) RETURNING code, name, description", [code, name, description])
+        const result = await db.query("INSERT INTO companies (code, name, description) VALUES ($1, $2, $3) RETURNING code, name, description", [slugcode, name, description])
 
         return res.status(201).json(result.rows[0]);
     }

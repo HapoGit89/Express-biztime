@@ -65,21 +65,21 @@ describe("DELETE /companies/code", function () {
     test("Deletes a company by code", async function () {
         const resp = await request(app).delete(`/companies/tc`)
         expect(resp.statusCode).toBe(200);
-        expect(resp.body).toEqual({"status":"deleted"});
-        const resp2 = await request(app). delete('/companies/lol')
+        expect(resp.body).toEqual({ "status": "deleted" });
+        const resp2 = await request(app).delete('/companies/lol')
         expect(resp2.statusCode).toBe(404)
         expect(resp2.body.error.message).toContain("Sorry couldnt find results for code")
-       
+
     });
 });
 
 
 describe("PUT /companies/code", function () {
     test("Updates a company by code", async function () {
-        const resp = await request(app).put(`/companies/tc`).send({"name": "screwing Inc", "description": "lol"})
+        const resp = await request(app).put(`/companies/tc`).send({ "name": "screwing Inc", "description": "lol" })
         expect(resp.statusCode).toBe(201);
-        expect(resp.body).toEqual({"code": "tc", "name": "screwing Inc", "description": "lol"});
-        const resp2 = await request(app).put('/companies/lol').send({"name": "screwing Inc", "description": "lol"})
+        expect(resp.body).toEqual({ "code": "tc", "name": "screwing Inc", "description": "lol" });
+        const resp2 = await request(app).put('/companies/lol').send({ "name": "screwing Inc", "description": "lol" })
         expect(resp2.statusCode).toBe(404)
         expect(resp2.body.error.message).toContain("Sorry couldnt find results for code")
         const resp3 = await request(app).put('/companies/lol').send([])

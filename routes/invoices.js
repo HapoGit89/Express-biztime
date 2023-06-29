@@ -75,18 +75,34 @@ router.put("/:id", async function (req, res, next) {
         if (req.body.length == 0 || !req.body) {
             throw new ExpressError("Please enter data", 400)
         }
-        const { amt } = req.body
+        const { amt, paid } = req.body
         const id = req.params.id
 
         if (!id || !amt) {
             throw new ExpressError("Pleaser enter Data in right format", 400)
         }
 
+       if (paid==undefined){
         const result = await db.query("UPDATE invoices SET amt =$1 WHERE id =$2 RETURNING id, comp_code, amt, paid, add_date, paid_date", [amt, id])
         if (result.rows.length == 0) {
             throw new ExpressError(`Sorry couldnt find results for code "${code}"`, 404)
         }
+        return res.status(201).json({invoice: result.rows[0]});}
+        else {
+            let paid_date 
+            if (paid == true){
+                paid_date = new Date(Date.now())
+            }
+            else if (paid == false){
+                paid_date = null
+            }
+            const result = await db.query("UPDATE invoices SET amt =$1, paid=$2, paid_date=$3 WHERE id =$4 RETURNING id, comp_code, amt, paid, add_date, paid_date", [amt, paid, paid_date, id])
+        if (result.rows.length == 0) {
+            throw new ExpressError(`Sorry couldnt find results for code "${code}"`, 404)
+        }
         return res.status(201).json({invoice: result.rows[0]});
+            
+        }
     }
     catch (e) {
         next(e)
