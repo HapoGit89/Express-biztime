@@ -39,7 +39,7 @@ router.post("/", async function (req, res, next) {
         const { code, name, description } = req.body
 
         if (!code || !name || !description) {
-            throw new ExpressError("Pleaser enter Data in right format", 400)
+            throw new ExpressError("Pleaser enter Data in right format", 422)
         }
 
         const result = await db.query("INSERT INTO companies (code, name, description) VALUES ($1, $2, $3) RETURNING code, name, description", [code, name, description])
@@ -56,9 +56,10 @@ router.delete("/:code", async function (req, res, next) {
         const code = req.params.code
         const result = await db.query("DELETE FROM companies WHERE code=$1 RETURNING code, name, description", [code])
         if (result.rows.length == 0) {
+            // return res.status(404).json({message: "Sorry couldnt ....."})
             throw new ExpressError(`Sorry couldnt find results for code "${code}"`, 404)
         }
-        return res.json({ deleted: [result.rows[0]] });
+        return res.json({"status": "deleted"});
     }
     catch (e) {
         next(e)
